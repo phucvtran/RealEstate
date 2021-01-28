@@ -144,13 +144,6 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
 
-# Email
-EMAIL_HOST = 'smtpout.secureserver.net'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'tran@pullova.com'
-EMAIL_HOST_PASSWORD = 'Seattle2018'
-EMAIL_USE_TLS = True
-
 try:
     from .local_settings import *
 except ImportError:
