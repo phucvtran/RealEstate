@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.contrib import auth
 from django.shortcuts import get_object_or_404, render
+import requests, json
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
@@ -13,17 +15,44 @@ def index(request):
     """
     docstring
     """
-    listings = Listing.objects.order_by('-list_date').filter(is_published = True)
+    # listings = Listing.objects.order_by('-list_date').filter(is_published = True)
+    listings = Listing
+    listings.objects.create(address = 'hello')
+    print(listings.address)
+    
+    # call Realtor api to get listing,
+    # default listing is set to SEATTLE, WASHINGTON
+    # url = "https://realtor.p.rapidapi.com/properties/list-for-sale"
 
-    paginator = Paginator(listings, 6)
-    page = request.GET.get('page')
-    paged_listings= paginator.get_page(page)
+    # querystring = {"city":"Seattle","offset":"0","limit":"31","state_code":"WA","sort":"relevance"}
 
-    context = {
-        'listings': paged_listings,
-    }
+    # headers = {
+    #     'x-rapidapi-key': "9967758667mshf478a6da53e4ff2p1a58cejsn50a1568fe9aa",
+    #     'x-rapidapi-host': "realtor.p.rapidapi.com"
+    #     }
 
-    return render(request, 'listings/listings.html', context)
+    # response = requests.request("GET", url, headers=headers, params=querystring)
+
+    # data = json.loads(response.text)
+
+    with open('listings\outputfile.json') as f:
+        data = json.load(f)
+
+    # print (data['listings'][0])
+
+    # for listing in data['listings'][0]:
+    #     print()
+        
+
+    # paginator = Paginator(listings, 6)
+    # page = request.GET.get('page')
+    # paged_listings= paginator.get_page(page)
+
+    # context = {
+    #     'listings': paged_listings,
+    # }
+
+    return render(request, 'listings/listings.html')
 
 def listing(request, listing_id):
     """
