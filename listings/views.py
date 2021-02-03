@@ -14,6 +14,7 @@ from .choices import state_choices, price_choices, bedroom_choices
 from .models import Listing
 from pages.views import readfile
 
+for_sale_data = readfile('forsalelisting.json')
 # Create your views here.
 def index(request):
     """
@@ -21,9 +22,7 @@ def index(request):
     """
 
 
-    data = readfile('forsalelisting.json')
-
-    print(data)
+    # print(data)
 
     # print('type of data is :')
     # print(type(data))
@@ -35,7 +34,7 @@ def index(request):
     # l =data['listings'][:]
     # print(l[:]['last_update'])
 
-    paginator = Paginator(data['listings'], 6)
+    paginator = Paginator(for_sale_data['listings'], 6)
     page = request.GET.get('page')
     paged_listings= paginator.get_page(page)
 
@@ -59,6 +58,20 @@ def listing(request, listing_id):
     }
 
     return render(request, 'listings/listing.html', context)
+
+def sale(request):
+
+    paginator = Paginator(for_sale_data['listings'], 6)
+    page = request.GET.get('page')
+    paged_listings= paginator.get_page(page)
+
+    
+    context = {
+        'listings': paged_listings,
+        
+    }
+    
+    return render(request, 'listings/for_sale_listings.html',context)
 
 def search(request):
     """
