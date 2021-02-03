@@ -23,6 +23,8 @@ def index(request):
 
     data = readfile('forsalelisting.json')
 
+    print(data)
+
     # print('type of data is :')
     # print(type(data))
     # print (data['listings'][0])
