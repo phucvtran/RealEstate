@@ -2,8 +2,7 @@ from realtors.models import Realtor
 from django.shortcuts import render
 from django.http import HttpResponse
 from listings.models import Listing
-import json, requests
-from btre import settings
+import json
 from listings.choices import state_choices, price_choices, bedroom_choices
 
 def index(request):
@@ -15,19 +14,7 @@ def index(request):
     #     'price_choices': price_choices
     # }
 
-    # data = readfile('./forsalelisting.json')
-    url = settings.REALTOR_API_FORSALE_URL
-
-    querystring = {"city":"Seattle","offset":"0","limit":"4","state_code":"WA","sort":"relevance"}
-
-    headers = {
-        'x-rapidapi-key': settings.REALTOR_API_KEY,
-        'x-rapidapi-host': settings.REALTOR_API_HOST
-        }
-
-    response = requests.request("GET", url, headers=headers, params=querystring)
-
-    data = json.loads(response.text)
+    data = readfile('forsalelisting.json')
 
     context = {
         'listings' : data['listings'][:3],
