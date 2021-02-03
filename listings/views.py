@@ -21,7 +21,7 @@ def index(request):
     """
 
 
-    data = readfile('forsalelisting.json')
+    data = readfile('./forsalelisting.json')
 
     # print('type of data is :')
     # print(type(data))

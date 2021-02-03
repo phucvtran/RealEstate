@@ -14,7 +14,7 @@ def index(request):
     #     'price_choices': price_choices
     # }
 
-    data = readfile('forsalelisting.json')
+    data = readfile('./forsalelisting.json')
 
     context = {
         'listings' : data['listings'][:3],
