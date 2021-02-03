@@ -2,7 +2,10 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib import auth
 from django.shortcuts import get_object_or_404, render
+
 import requests, json
+
+import re
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
@@ -16,9 +19,6 @@ def index(request):
     docstring
     """
     # listings = Listing.objects.order_by('-list_date').filter(is_published = True)
-    listings = Listing
-    listings.objects.create(address = 'hello')
-    print(listings.address)
     
     # call Realtor api to get listing,
     # default listing is set to SEATTLE, WASHINGTON
@@ -38,21 +38,27 @@ def index(request):
     with open('listings\outputfile.json') as f:
         data = json.load(f)
 
+    # print('type of data is :')
+    # print(type(data))
     # print (data['listings'][0])
 
     # for listing in data['listings'][0]:
     #     print()
         
+    # l =data['listings'][:]
+    # print(l[:]['last_update'])
 
-    # paginator = Paginator(listings, 6)
-    # page = request.GET.get('page')
-    # paged_listings= paginator.get_page(page)
+    paginator = Paginator(data['listings'], 6)
+    page = request.GET.get('page')
+    paged_listings= paginator.get_page(page)
 
-    # context = {
-    #     'listings': paged_listings,
-    # }
-
-    return render(request, 'listings/listings.html')
+    
+    context = {
+        'listings': paged_listings,
+        
+    }
+    
+    return render(request, 'listings/listings.html',context)
 
 def listing(request, listing_id):
     """
