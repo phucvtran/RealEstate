@@ -23,6 +23,7 @@ def for_sale_API(modeladmin, request, queryset):
 
     with open('forsalelisting.json', 'wb') as outf:
         outf.write(response.content)
+        outf.close()
 
 class ListingAdmin(admin.ModelAdmin):
     list_display = ('id', 'address', 'is_published', 'price', 'list_date', 'realtor')
