@@ -2,14 +2,24 @@ from realtors.models import Realtor
 from django.shortcuts import render
 from django.http import HttpResponse
 from listings.models import Listing
+import json
 from listings.choices import state_choices, price_choices, bedroom_choices
 
 def index(request):
-    listings = Listing.objects.order_by('-list_date').filter(is_published = True)[:3]
+    # listings = Listing.objects.order_by('-list_date').filter(is_published = True)[:3]
+    # context = {
+    #     'listings': listings,
+    #     'state_choices': state_choices,
+    #     'bedroom_choices': bedroom_choices, 
+    #     'price_choices': price_choices
+    # }
+
+    data = readfile('forsalelisting.json')
+
     context = {
-        'listings': listings,
+        'listings' : data['listings'][:3],
         'state_choices': state_choices,
-        'bedroom_choices': bedroom_choices,
+        'bedroom_choices': bedroom_choices, 
         'price_choices': price_choices
     }
 
@@ -27,3 +37,8 @@ def about(request):
         'mvp_realtors' : mvp_realtors
     }
     return render(request, 'pages/about.html', context)
+
+def readfile(filename):
+    with open(filename) as f:
+        data = json.load(f)
+        return data

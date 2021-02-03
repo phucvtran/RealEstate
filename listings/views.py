@@ -12,31 +12,16 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from .choices import state_choices, price_choices, bedroom_choices
 
 from .models import Listing
+from pages.views import readfile
 
 # Create your views here.
 def index(request):
     """
     docstring
     """
-    # listings = Listing.objects.order_by('-list_date').filter(is_published = True)
-    
-    # call Realtor api to get listing,
-    # default listing is set to SEATTLE, WASHINGTON
-    # url = "https://realtor.p.rapidapi.com/properties/list-for-sale"
 
-    # querystring = {"city":"Seattle","offset":"0","limit":"31","state_code":"WA","sort":"relevance"}
 
-    # headers = {
-    #     'x-rapidapi-key': "9967758667mshf478a6da53e4ff2p1a58cejsn50a1568fe9aa",
-    #     'x-rapidapi-host': "realtor.p.rapidapi.com"
-    #     }
-
-    # response = requests.request("GET", url, headers=headers, params=querystring)
-
-    # data = json.loads(response.text)
-
-    with open('listings\outputfile.json') as f:
-        data = json.load(f)
+    data = readfile('forsalelisting.json')
 
     # print('type of data is :')
     # print(type(data))
