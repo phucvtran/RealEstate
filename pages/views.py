@@ -41,4 +41,5 @@ def about(request):
 def readfile(filename):
     with open(filename) as f:
         data = json.load(f)
+        f.close()
         return data
