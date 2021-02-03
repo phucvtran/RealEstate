@@ -19,9 +19,20 @@ def index(request):
     """
     docstring
     """
+    url = settings.REALTOR_API_FORSALE_URL
 
+    querystring = {"city":"Seattle","offset":"0","limit":"31","state_code":"WA","sort":"relevance"}
 
-    data = readfile('./forsalelisting.json')
+    headers = {
+        'x-rapidapi-key': settings.REALTOR_API_KEY,
+        'x-rapidapi-host': settings.REALTOR_API_HOST
+        }
+
+    response = requests.request("GET", url, headers=headers, params=querystring)
+
+    data = json.loads(response.text)
+
+    # data = readfile('./forsalelisting.json')
 
     # print('type of data is :')
     # print(type(data))
