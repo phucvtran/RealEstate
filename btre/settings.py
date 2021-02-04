@@ -148,6 +148,7 @@ MESSAGE_TAGS = {
 REALTOR_API_KEY = config('REALTOR_API_KEY', default='')
 REALTOR_API_HOST = config ('REALTOR_API_HOST', default='')
 REALTOR_API_FORSALE_URL = config ('REALTOR_API_FORSALE_URL', default ='')
+REALTOR_API_FORSALE_URL = config ('REALTOR_API_FORRENT_URL', default ='')
 
 try:
     from .local_settings import *

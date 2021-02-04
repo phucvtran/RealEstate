@@ -15,33 +15,27 @@ from .models import Listing
 from pages.views import readfile
 
 for_sale_data = readfile('forsalelisting.json')
+for_rent_data = readfile('forrentlisting.json')
 # Create your views here.
 def index(request):
     """
     docstring
     """
 
-
-    # print(data)
-
-    # print('type of data is :')
-    # print(type(data))
-    # print (data['listings'][0])
-
-    # for listing in data['listings'][0]:
-    #     print()
-        
-    # l =data['listings'][:]
-    # print(l[:]['last_update'])
-
+    # for sale 
     paginator = Paginator(for_sale_data['listings'], 6)
     page = request.GET.get('page')
     paged_listings= paginator.get_page(page)
 
+    # for rent
+    paginator_rent = Paginator(for_rent_data['listings'], 6)
+    page_rent = request.GET.get('page')
+    paged_listings_rent= paginator_rent.get_page(page_rent)
+
     
     context = {
-        'listings': paged_listings,
-        
+        'sale_listings': paged_listings,  
+        'rent_listings': paged_listings_rent   
     }
     
     return render(request, 'listings/listings.html',context)
@@ -72,6 +66,20 @@ def sale(request):
     }
     
     return render(request, 'listings/for_sale_listings.html',context)
+
+def rent(request):
+
+    paginator = Paginator(for_rent_data['listings'], 6)
+    page = request.GET.get('page')
+    paged_listings= paginator.get_page(page)
+
+    
+    context = {
+        'listings': paged_listings,
+        
+    }
+    
+    return render(request, 'listings/for_rent_listings.html',context)
 
 def search(request):
     """

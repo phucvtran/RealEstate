@@ -14,10 +14,13 @@ def index(request):
     #     'price_choices': price_choices
     # }
 
-    data = readfile('forsalelisting.json')
+    sale_data = readfile('forsalelisting.json')
+    rent_data = readfile('forrentlisting.json')
+    
 
     context = {
-        'listings' : data['listings'][:3],
+        'sale_listings' : sale_data['listings'][:3],
+        'rent_listings': rent_data['listings'][:3],
         'state_choices': state_choices,
         'bedroom_choices': bedroom_choices, 
         'price_choices': price_choices
