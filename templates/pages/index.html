@@ -5,7 +5,8 @@
 {%load static%}
 
 {%block title%} | Welcome{%endblock%}
-
+<!--lam search cho het page
+lam rent api cho search-->
 {% block content%}
   <!-- Showcase -->
   <section id="showcase">
@@ -22,8 +23,13 @@
               <!-- Form Row 1 -->
               <div class="form-row">
                 <div class="col-md-4 mb-3">
-                  <label class="sr-only">Keywords</label>
-                  <input type="text" name="keywords" class="form-control" placeholder="Keyword (Pool, Garage, etc)">
+                  <label class="sr-only">Search</label>
+                  <select name="search" class="form-control">
+                    {%for key,value in search_choices.items %}
+                      <option value="{{key}}">{{value}}</option>
+                    {%endfor%}
+                    
+                  </select>
                 </div>
 
                 <div class="col-md-4 mb-3">
@@ -44,7 +50,7 @@
               </div>
               <!-- Form Row 2 -->
               <div class="form-row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
                   <label class="sr-only">Bedrooms</label>
                   <select name="bedrooms" class="form-control">
                     <option selected="true" disabled="disabled">Bedrooms (All)</option>
@@ -53,10 +59,18 @@
                     {%endfor%}
                   </select>
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
                   <select name="price" class="form-control" id="type">
-                    <option selected="true" disabled="disabled">Max Price (Any)</option>
+                    <option selected="true" disabled="disabled">Sale Max Price (Any)</option>
                     {%for key,value in price_choices.items %}
+                      <option value="{{key}}">{{value}}</option>
+                    {%endfor%}
+                  </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <select name="price-rent" class="form-control" id="type">
+                    <option selected="true" disabled="disabled">Rent Price Range</option>
+                    {%for key,value in price_choices_rent.items %}
                       <option value="{{key}}">{{value}}</option>
                     {%endfor%}
                   </select>

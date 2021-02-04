@@ -1,8 +1,10 @@
 {% extends 'base.html'%}
-
 {%load humanize%}
+{%load custom_date%}
+{%load custom_date_rent%}
+{%load static%}
 
-{%block title%} | Search Results{%endblock%}
+{%block address%} | Browse Property Listing{%endblock%}
 
 {%block content%}
 <section id="showcase-inner" class="showcase-search text-white py-5">
@@ -13,8 +15,17 @@
           <!-- Form Row 1 -->
           <div class="form-row">
             <div class="col-md-4 mb-3">
-              <label class="sr-only">Keywords</label>
-              <input type="text" name="keywords" class="form-control" placeholder="Keyword (Pool, Garage, etc)" value="{{values.keywords}}">
+              <label class="sr-only">Search</label>
+              <select name="search" class="form-control">
+                {%for key,value in search_choices.items %}
+                  <option value="{{key}}"
+                  {%if key == searchmethod %}
+                    selected
+                  {%endif%}
+                  >{{value}}</option>
+                {%endfor%}
+                
+              </select>
             </div>
 
             <div class="col-md-4 mb-3">
@@ -29,7 +40,7 @@
 
                 {%for key,value in state_choices.items %}
                   <option value="{{key}}"
-                  {%if key == values.state %}
+                  {%if key == values.state_code %}
                     selected
                   {%endif%}
                   >{{value}}</option>
@@ -47,7 +58,7 @@
 
                 {%for key,value in bedroom_choices.items %}
                   <option value="{{key}}"
-                  {%if key == values.bedrooms %}
+                  {%if key == values.beds_min %}
                     selected
                   {%endif%}
                   >{{value}}</option>
@@ -60,7 +71,7 @@
                 <option selected="true" disabled="disabled">Max Price (All)</option>
                 {%for key,value in price_choices.items %}
                   <option value="{{key}}"
-                  {%if key == values.price %}
+                  {%if key == values.price_max %}
                     selected
                   {%endif%}
                   >{{value}}</option>
@@ -75,74 +86,149 @@
   </div>
 </section>
 
-<!-- Breadcrumb -->
-<section id="bc" class="mt-3">
-  <div class="container">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a href="index.html">
-            <i class="fas fa-home"></i> Home</a>
-        </li>
-        <li class="breadcrumb-item">
-          <a href="listings.html">Browse Listings</a>
-        </li>
-        <li class="breadcrumb-item active"> Search Results</li>
-      </ol>
-    </nav>
-  </div>
-</section>
+{%if 'sale' in searchmethod%}
+  <!-- Breadcrumb -->
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'index' %}">
+              <i class="fas fa-home"></i> Home</a>
+          </li>
+          <li class="breadcrumb-item active"> Search Result (For Sale):</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
 
-<!-- Listings -->
-<section id="listings" class="py-4">
-  <div class="container">
-    <div class="row">
-
-      {% if listings%}
-          {% for listing in listings%}
+    <!-- Listings -->
+    <section id="listings" class="py-4">
+      <div class="container">
+        <div class="row">
+          {% if listings%}
+            {% for listing in listings%}
             <div class="col-md-6 col-lg-4 mb-4">
               <div class="card listing-preview">
-                <img class="card-img-top" src="{{ listing.photo_main.url }}" alt="">
+                <img class="card-img-top" src="{{listing.photo}}" alt="">
                 <div class="card-img-overlay">
                   <h2>
-                    <span class="badge badge-secondary text-white">$ {{ listing.price | intcomma}}</span>
+                    <span class="badge badge-secondary text-white">$ {{listing.price_raw | intcomma}}</span>
                   </h2>
                 </div>
                 <div class="card-body">
                   <div class="listing-heading text-center">
-                    <h4 class="text-primary">{{ listing.title }}</h4>
+                    <h4 class="text-primary">{{listing.address_new.line}}</h4>
                     <p>
-                      <i class="fas fa-map-marker text-secondary"></i> {{listing.city}} {{listing.state}},
-                      {{listing.zipcode}}
-                    </p>
+                      <i class="fas fa-map-marker text-secondary"></i> {{listing.address_new.city}} {{listing.address_new.state_code}}, {{listing.address_new.postal_code}}</p>
                   </div>
+                  <p> 
+                    Neighborhood: {{listing.address_new.neighborhood_name}}</p>
                   <hr>
                   <div class="row py-2 text-secondary">
                     <div class="col-6">
-                      <i class="fas fa-th-large"></i> Sqft: {{listing.sqft}}</div>
+                      <i class="fas fa-home"></i> {{listing.prop_type.capitalize}}</div>
                     <div class="col-6">
-                      <i class="fas fa-car"></i> Garage: {{listing.garage}}</div>
+                      <i class="fas fa-th-large"></i> Sqft: {{listing.sqft_raw}}</div>
+
                   </div>
                   <div class="row py-2 text-secondary">
                     <div class="col-6">
-                      <i class="fas fa-bed"></i> Bedrooms: {{listing.bedrooms}}</div>
+                      <i class="fas fa-bed"></i> Bedrooms: {{listing.beds}}</div>
                     <div class="col-6">
-                      <i class="fas fa-bath"></i> Bathrooms: {{listing.bathrooms}}</div>
+                      <i class="fas fa-bath"></i> Bathrooms: {{listing.baths}}</div>
                   </div>
                   <hr>
                   <div class="row py-2 text-secondary">
                     <div class="col-12">
-                      <i class="fas fa-user"></i> {{listing.realtor}}</div>
+                      <i class="fas fa-user"></i> {{listing.office_name}}</div>
                   </div>
                   <div class="row text-secondary pb-2">
-                    <div class="col-6">
-                      <i class="fas fa-clock"></i> {{listing.list_date | timesince}}</div>
+                    <div class="col-6" >
+                      <i class="fas fa-clock"></i> {{listing.last_update|custom_date }}</div>
                   </div>
                   <hr>
-                  <a href="{% url 'listing' listing.id %}" class="btn btn-primary btn-block">More Info</a>
+                  <a href="listing.html" class="btn btn-primary btn-block">More Info</a>
                 </div>
               </div>
             </div>
+
+            {%endfor%}
+
+          {%else%}
+          <div class="col-md-12">
+            <p>No Listings Available</p>
+          </div>
+
+          {%endif%}
+
+
+        </div>
+    </div>
+    </section>
+  {%elif 'rent' in searchmethod%}
+    <!-- Breadcrumb -->
+    <section id="bc" class="mt-3">
+      <div class="container">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'index' %}">
+                <i class="fas fa-home"></i> Home</a>
+            </li>
+            <li class="breadcrumb-item active"> Search Result (For Rent):</li>
+          </ol>
+        </nav>
+      </div>
+    </section>
+    <!-- Listings -->
+  <section id="listings" class="py-4">
+    <div class="container">
+      <div class="row">
+        {% if listings%}
+          {% for listing in listings%}
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card listing-preview">
+              {%if listing.photo%}
+                <img class="card-img-top" src="{{listing.photo}}" alt="">
+              {%else%}
+                <img class="card-img-top" src="{% static 'img/nophotoavailable.jpg' %}" alt="">
+              {%endif%}
+              <div class="card-img-overlay">
+                <h2>
+                  <span class="badge badge-secondary text-white">{{listing.price}}</span>
+                </h2>
+              </div>
+              <div class="card-body">
+                <div class="listing-heading text-center">
+                  <h4 class="text-primary">{{listing.address_new.line}}</h4>
+                  <p>
+                    <i class="fas fa-map-marker text-secondary"></i> {{listing.address_new.city}} {{listing.address_new.state_code}}, {{listing.address_new.postal_code}}</p>
+                </div>
+                <hr>
+                <div class="row py-2 text-secondary">
+                  <div class="col-6">
+                    <i class="fas fa-home"></i> {{listing.prop_type.capitalize}}</div>
+                  <div class="col-6">
+                    <i class="fas fa-th-large"></i> Sqft: {{listing.sqft}}</div>
+
+                </div>
+                <div class="row py-2 text-secondary">
+                  <div class="col-6">
+                    <i class="fas fa-bed"></i> Bedrooms: {{listing.beds}}</div>
+                  <div class="col-6">
+                    <i class="fas fa-bath"></i> Bathrooms: {{listing.baths}}</div>
+                </div>
+                <hr>
+                <div class="row text-secondary pb-2">
+                  <div class="col-6" >
+                    <i class="fas fa-clock"></i> {{listing.last_update | custom_date_rent}}</div>
+                </div>
+                <hr>
+                <a href="listing.html" class="btn btn-primary btn-block">More Info</a>
+              </div>
+            </div>
+          </div>
 
           {%endfor%}
 
@@ -154,8 +240,9 @@
         {%endif%}
 
 
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
+  {%endif%}
 {%endblock%}

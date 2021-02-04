@@ -1,3 +1,8 @@
+search_choices ={
+    'list-for-sale':"For Sale",
+    'list-for-rent':"For Rent"
+}
+
 bedroom_choices = {
     '1':1,
     '2':2,
@@ -22,6 +27,21 @@ price_choices = {
     '800000':'$800,000',
     '900000':'$900,000',
     '1000000':'$1M+'
+
+}
+
+
+price_choices_rent = {
+    '300':'$ 300 - 600 per month',
+    '600':'$ 600 - 900 per month',
+    '900':'$ 900 - 1,200 per month',
+    '1200':'$ 1,200 - 1,500 per month',
+    '1500':'$ 1,500 - 1,800 per month',
+    '1800':'$ 1,800 - 2,100 per month',
+    '2100':'$ 2,100 - 2,400 per month',
+    '2400': '$ 2,400 - 2,700 per month',
+    '2700':'$ 2,700 - 3,000 per month',
+    '3000+':'$ 3,000+ per month'
 
 }
 

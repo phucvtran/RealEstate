@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib import auth
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render,redirect
 
 import requests, json
 
@@ -9,7 +9,7 @@ import re
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
-from .choices import state_choices, price_choices, bedroom_choices
+from .choices import state_choices, price_choices, bedroom_choices, search_choices, price_choices_rent
 
 from .models import Listing
 from pages.views import readfile
@@ -85,46 +85,67 @@ def search(request):
     """
     docstring
     """
-    queryset_list = Listing.objects.order_by('-list_date')
+    url = "https://realtor.p.rapidapi.com/properties/"
+    querystring = {
+        "offset":"0",
+        "limit":"30",
+        "sort":"relevance",
+    }
+
+    searchmethod = ""
+
+    headers = {
+        'x-rapidapi-key': settings.REALTOR_API_KEY,
+        'x-rapidapi-host': settings.REALTOR_API_HOST
+        }
 
     # Keyword
-    if 'keywords' in request.GET:
-        keywords = request.GET['keywords']
-        if keywords:
-            queryset_list = queryset_list.filter(description__icontains = keywords)
+    if 'search' in request.GET:
+        search = request.GET['search']           
+        if search:
+            url=url+search
+            searchmethod = search
 
     # city
     if 'city' in request.GET:
         city = request.GET['city']
         if city:
-            queryset_list = queryset_list.filter(city__iexact = city)
+            querystring['city'] = city
+            
 
     # state
     if 'state' in request.GET:
         state = request.GET['state']
         if state:
-            queryset_list = queryset_list.filter(state__iexact = state)
+            querystring['state_code'] = state
 
     # bedroom
     if 'bedrooms' in request.GET:
         bedrooms = request.GET['bedrooms']
         if bedrooms:
-            queryset_list = queryset_list.filter(bedrooms__lte = bedrooms) # lte = less than or equal to
+            querystring['beds_min'] = bedrooms
 
 
     #price
     if 'price' in request.GET:
         price = request.GET['price']
         if price:
-            queryset_list = queryset_list.filter(price__lte = price)
+            querystring['price_max'] = price
 
-    
+    response = requests.request("GET", url, headers=headers, params=querystring)
+    # data = readfile('forsalelisting.json')
+    data = json.loads(response.text)
+    print(searchmethod)
+
     context = {
-        'listings': queryset_list,
+        'listings': data['listings'],
         'state_choices': state_choices,
         'bedroom_choices': bedroom_choices,
         'price_choices': price_choices,
-        'values': request.GET
+        'search_choices': search_choices,
+        'price_choices_rent': price_choices_rent,
+        'values': querystring,
+        'searchmethod': searchmethod
         
     }
     return render(request, 'listings/search.html', context)
