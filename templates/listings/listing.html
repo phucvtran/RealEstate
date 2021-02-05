@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
 {% load humanize%}
+{%load custom_date%}
+{% load custom_date_rent%}
+{%load static%}
 
-{%block title%} | {{listing.title}}{%endblock%}
+{%block title%} | {{listing.address}}{%endblock%}
 
 {%block content%}
 
@@ -11,9 +14,9 @@
     <div class="container">
     <div class="row text-center">
         <div class="col-md-12">
-        <h1 class="display-4">{{listing.title}}</h1>
+        <h1 class="display-4">{{listing.address_new.line}}</h1>
         <p class="lead">
-            <i class="fas fa-map-marker"></i> {{listing.city}} {{listing.state}}, {{listing.zipcode}}</p>
+            <i class="fas fa-map-marker"></i> {{listing.address_new.city}} {{listing.address_new.state_code}}, {{listing.address_new.postal_code}}</p>
         </div>
     </div>
     </div>
@@ -28,9 +31,14 @@
             <a href="{% url 'index' %}">Home</a>
         </li>
         <li class="breadcrumb-item">
-            <a href="{% url 'listings' %}">Listings</a>
+            {%if listing.prop_status == 'for_sale'%}
+                <a href= "{% url 'for-sale-listings' %}"> For-Sale Listing</a>
+            {%elif listing.prop_status == 'for_rent'%}
+                <a href= "{% url 'for-rent-listings' %}"> For-Rent Listing</a>
+            {%endif%}
+            
         </li>
-        <li class="breadcrumb-item active">{{listing.title}}</li>
+        <li class="breadcrumb-item active">{{listing.address}}</li>
         </ol>
     </nav>
     </div>
@@ -42,15 +50,28 @@
 <!-- Listing -->
 <section id="listing" class="py-4">
     <div class="container">
-    <a href="{% url 'listings' %}" class="btn btn-light mb-4">Back To Listings</a>
+        {%if listing.prop_status == 'for_sale'%}
+            <a href="{% url 'for-sale-listings' %}" class="btn btn-light mb-4">Back To Sale Listings</a>
+        {%elif listing.prop_status == 'for_rent'%}
+        <a href="{% url 'for-rent-listings' %}" class="btn btn-light mb-4">Back To Rent Listings</a>
+        {%endif%}
+
     <div class="row">
         <div class="col-md-9">
         <!-- Home Main Image -->
-        <img src="{{listing.photo_main.url}}" alt="" class="img-main img-fluid mb-3">
-        <!-- Thumbnails -->
-        <div class="row mb-5 thumbs">
+        {%if listing.photo%}
+            <img src="{{listing.photo}}" alt="" class="img-main img-fluid mb-3">
+        {%else%}
+            <img src="{% static 'img/nophotoavailable.jpg' %}" alt="" class="img-main img-fluid mb-3">
+        {%endif%}
 
-            {%if listing.photo_1%}
+        {%if listing.prop_status == 'for_sale'%}
+            <a href="{{listing.rdc_web_url}}" target="_blank">More Photo></a>
+        {%endif%}
+        <!-- Thumbnails -->
+        <!-- <div class="row mb-5 thumbs"> -->
+
+            <!-- {%if listing.photo_1%}
             <div class="col-md-2">
             <a href="{{listing.photo_1.url}}" data-lightbox="home-images">
                 <img src="{{listing.photo_1.url}}" alt="" class="img-fluid">
@@ -95,29 +116,29 @@
             <a href="{{listing.photo_6.url}}" data-lightbox="home-images">
                 <img src="{{listing.photo_6.url}}" alt="" class="img-fluid">
             </a>
-            </div>
-            {%endif%}
+            </div> -->
+            <!-- {%endif%} -->
 
-        </div>
+        <!-- </div> -->
         <!-- Fields -->
         <div class="row mb-5 fields">
             <div class="col-md-6">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item text-secondary">
                 <i class="fas fa-money-bill-alt"></i> Asking Price:
-                <span class="float-right">${{listing.price | intcomma}}</span>
+                <span class="float-right">{{listing.price}}</span>
                 </li>
                 <li class="list-group-item text-secondary">
                 <i class="fas fa-bed"></i> Bedrooms:
-                <span class="float-right">{{listing.bedrooms}}</span>
+                <span class="float-right">{{listing.beds}}</span>
                 </li>
                 <li class="list-group-item text-secondary">
                 <i class="fas fa-bath"></i> Bathrooms:
-                <span class="float-right">{{listing.bathrooms}}</span>
+                <span class="float-right">{{listing.baths}}</span>
                 </li>
                 <li class="list-group-item text-secondary">
-                <i class="fas fa-car"></i> Garage:
-                <span class="float-right">{{listing.garage}}
+                <i class="fas fa-home"></i> Property Type:
+                <span class="float-right"> {{listing.prop_type}}
                 </span>
                 </li>
             </ul>
@@ -129,18 +150,33 @@
                 <span class="float-right">{{listing.sqft}}</span>
                 </li>
                 <li class="list-group-item text-secondary">
-                <i class="fas fa-square"></i> Lot Size:
-                <span class="float-right">{{listing.lot_size}}
+                <i class="fas fa-home"></i> New Home:
+                {%if listing.is_new_construction == True%}
+                    <span class="float-right"> YES
+                {%else%}
+                    <span class="float-right"> NO
+
+                {%endif%}
                 </span>
                 </li>
                 <li class="list-group-item text-secondary">
                 <i class="fas fa-calendar"></i> Listing Date:
-                <span class="float-right">{{listing.list_date}}</span>
+                {%if not listing.list_date%}
+                    <span class="float-right">{{listing.last_update|custom_date_rent}}</span>
+                {%else%}
+                    <span class="float-right">{{listing.list_date|custom_date}}</span>
+                {%endif%}
                 </li>
                 <li class="list-group-item text-secondary">
-                <i class="fas fa-bed"></i> Realtor:
-                <span class="float-right">{{listing.realtor}}
-                </span>
+                {%if listing.prop_status == 'for_sale'%}
+                    <i class="fas fa-user"></i> Realtor:
+                    <span class="float-right"> {{listing.office_name}}
+                    </span>
+                {%elif listing.prop_status == 'for_rent'%}
+                    <i class="fas fa-calendar"></i> Last Updated On:
+                    <span class="float-right"> {{listing.last_update | custom_date_rent}}
+                    </span>
+                {%endif%}
                 </li>
 
 
@@ -151,7 +187,7 @@
         <!-- Description -->
         <div class="row mb-5">
             <div class="col-md-12">
-            {{listing.Description}}
+            listing.Description
             </div>
         </div>
         </div>
@@ -160,7 +196,10 @@
             <img class="card-img-top" src="{{listing.realtor.photo.url}}" alt="">
             <div class="card-body">
             <h5 class="card-title">Property Realtor</h5>
-            <h6 class="text-secondary">{{listing.realtor}}</h6>
+            {%if listing.prop_status == 'for_sale'%}
+                <h6 class="text-secondary"> {{listing.office_name}}</h6>
+                <a href="{{listing.rdc_web_url}}" target="_blank">More Info></a>
+            {%endif%}
             </div>
         </div>
         <button class="btn-primary btn-block btn-lg" data-toggle="modal" data-target="#inquiryModal">Make An Inquiry</button>
@@ -188,10 +227,10 @@
                 <input type="hidden" name="user_id" value="0">
             {%endif%}
             <input type="hidden" name="realtor_email" value="{{listing.realtor.email}}">
-            <input type="hidden" name="listing_id" value="{{listing.id}}">
+            <input type="hidden" name="listing_id" value="{{listing.listing_id}}">
             <div class="form-group">
             <label for="property_name" class="col-form-label">Property:</label>
-            <input type="text" name="listing" class="form-control" value="{{listing.title}}" >
+            <input type="text" name="listing" class="form-control" value="{{listing.address}}" >
             </div>
             <div class="form-group">
             <label for="name" class="col-form-label">Name:</label>

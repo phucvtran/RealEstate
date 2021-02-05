@@ -50,10 +50,19 @@ def listing(request, listing_id):
     single listing
     docstring
     """
-    listing = get_object_or_404(Listing, pk = listing_id)
+
+    data = []
+    if 's_listing' in request.path_info:
+        for listing in for_sale_data['listings']:
+            if listing['listing_id'] == listing_id:
+                data = listing
+    elif 'r_listing' in request.path_info:
+        for listing in for_rent_data['listings']:
+            if listing['listing_id'] == listing_id:
+                data = listing
 
     context = {
-        'listing': listing,
+        'listing': data,
     }
 
     return render(request, 'listings/listing.html', context)
