@@ -35,7 +35,12 @@ def index(request):
     
     context = {
         'sale_listings': paged_listings,  
-        'rent_listings': paged_listings_rent   
+        'rent_listings': paged_listings_rent,
+        'state_choices': state_choices,
+        'bedroom_choices': bedroom_choices,
+        'price_choices': price_choices,
+        'search_choices': search_choices,
+        'price_choices_rent': price_choices_rent
     }
     
     return render(request, 'listings/listings.html',context)
@@ -62,6 +67,11 @@ def sale(request):
     
     context = {
         'listings': paged_listings,
+        'state_choices': state_choices,
+        'bedroom_choices': bedroom_choices,
+        'price_choices': price_choices,
+        'search_choices': search_choices,
+        'price_choices_rent': price_choices_rent
         
     }
     
@@ -76,6 +86,12 @@ def rent(request):
     
     context = {
         'listings': paged_listings,
+        'state_choices': state_choices,
+        'bedroom_choices': bedroom_choices,
+        'price_choices': price_choices,
+        'search_choices': search_choices,
+        'price_choices_rent': price_choices_rent
+        
         
     }
     
@@ -88,7 +104,6 @@ def search(request):
     url = "https://realtor.p.rapidapi.com/properties/"
     querystring = {
         "offset":"0",
-        "limit":"30",
         "sort":"relevance",
     }
 
@@ -105,7 +120,22 @@ def search(request):
         if search:
             url=url+search
             searchmethod = search
-
+        if 'sale' in search:
+            if 'price' in request.GET:
+                price = request.GET['price']
+                if price:
+                    querystring['price_max'] = price
+                    querystring["limit"] = settings.REALTOR_API_SALE_LIMIT
+        elif 'rent' in search:
+            if 'price-rent' in request.GET:
+                price_rent = request.GET['price-rent']
+                if '2000' in price_rent:
+                    querystring['price_min'] = price_rent
+                    querystring["limit"] = settings.REALTOR_API_RENT_LIMIT
+                else:
+                    querystring['price_max'] = str(int(price_rent) + 200)
+                    querystring['price_min'] = price_rent
+                    querystring["limit"] = settings.REALTOR_API_RENT_LIMIT
     # city
     if 'city' in request.GET:
         city = request.GET['city']
@@ -126,16 +156,10 @@ def search(request):
             querystring['beds_min'] = bedrooms
 
 
-    #price
-    if 'price' in request.GET:
-        price = request.GET['price']
-        if price:
-            querystring['price_max'] = price
-
     response = requests.request("GET", url, headers=headers, params=querystring)
     # data = readfile('forsalelisting.json')
     data = json.loads(response.text)
-    print(searchmethod)
+    
 
     context = {
         'listings': data['listings'],

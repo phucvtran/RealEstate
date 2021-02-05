@@ -41,7 +41,7 @@
           </div>
           <!-- Form Row 2 -->
           <div class="form-row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
               <label class="sr-only">Bedrooms</label>
               <select name="bedrooms" class="form-control">
                 <option selected="true" disabled="disabled">Bedrooms (Any)</option>
@@ -56,7 +56,7 @@
 
               </select>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
               <select name="price" class="form-control">
                 <option selected="true" disabled="disabled">Max Price (All)</option>
                 {%for key,value in price_choices.items %}
@@ -65,6 +65,14 @@
                     selected
                   {%endif%}
                   >{{value}}</option>
+                {%endfor%}
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <select name="price-rent" class="form-control" id="type">
+                <option selected="true" disabled="disabled">Rent Price Range (Any)</option>
+                {%for key,value in price_choices_rent.items %}
+                  <option value="{{key}}">{{value}}</option>
                 {%endfor%}
               </select>
             </div>

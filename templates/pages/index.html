@@ -69,7 +69,7 @@ lam rent api cho search-->
                 </div>
                 <div class="col-md-4 mb-3">
                   <select name="price-rent" class="form-control" id="type">
-                    <option selected="true" disabled="disabled">Rent Price Range</option>
+                    <option selected="true" disabled="disabled">Rent Price Range (Any)</option>
                     {%for key,value in price_choices_rent.items %}
                       <option value="{{key}}">{{value}}</option>
                     {%endfor%}
@@ -131,7 +131,8 @@ lam rent api cho search-->
                   </div>
                   <div class="row text-secondary pb-2">
                     <div class="col-6" >
-                      <i class="fas fa-clock"></i> {{listing.last_update|custom_date }}</div>
+                      <i class="fas fa-clock"></i>{{listing.last_update|custom_date}}
+                    </div>
                   </div>
                   <hr>
                   <a href="listing.html" class="btn btn-primary btn-block">More Info</a>

@@ -10,7 +10,11 @@ def custom_date_rent(value, arg=None):
 
     if isinstance(value, str):
         api_date_format = '%Y-%m-%dT%H:%M:%S.%fZ'  # 2019-08-30T08:22:32.245-0700
-        value = datetime.datetime.strptime(value, api_date_format)
+        api_date_format_2 = "%Y-%m-%d"
+        if 'Z' in value:
+            value = datetime.datetime.strptime(value, api_date_format)
+        else:
+            value = datetime.datetime.strptime(value, api_date_format_2)
 
     try:
         return formats.date_format(value, arg)
