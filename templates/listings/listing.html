@@ -53,7 +53,7 @@
         {%if listing.prop_status == 'for_sale'%}
             <a href="{% url 'for-sale-listings' %}" class="btn btn-light mb-4">Back To Sale Listings</a>
         {%elif listing.prop_status == 'for_rent'%}
-        <a href="{% url 'for-rent-listings' %}" class="btn btn-light mb-4">Back To Rent Listings</a>
+            <a href="{% url 'for-rent-listings' %}" class="btn btn-light mb-4">Back To Rent Listings</a>
         {%endif%}
 
     <div class="row">
@@ -149,16 +149,26 @@
                 <i class="fas fa-th-large"></i> Square Feet:
                 <span class="float-right">{{listing.sqft}}</span>
                 </li>
-                <li class="list-group-item text-secondary">
-                <i class="fas fa-home"></i> New Home:
-                {%if listing.is_new_construction == True%}
-                    <span class="float-right"> YES
-                {%else%}
-                    <span class="float-right"> NO
 
+                {%if listing.prop_status == 'for_sale'%}
+                    <li class="list-group-item text-secondary">
+                    <i class="fas fa-home"></i> New Home:
+                    {%if listing.is_new_construction == True%}
+                        <span class="float-right"> YES
+                    {%else%}
+                        <span class="float-right"> NO
+
+                    {%endif%}
+                    </span>
+                    </li>
+                {% elif listing.prop_status == 'for_rent'%}
+                    <li class="list-group-item text-secondary">
+                    <i class="fas fa-home"></i> Name:
+                    <span class="float-right"> {{listing.name}}
+
+                    </span>
+                    </li>
                 {%endif%}
-                </span>
-                </li>
                 <li class="list-group-item text-secondary">
                 <i class="fas fa-calendar"></i> Listing Date:
                 {%if not listing.list_date%}

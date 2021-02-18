@@ -16,6 +16,7 @@ from pages.views import readfile
 
 for_sale_data = readfile('forsalelisting.json')
 for_rent_data = readfile('forrentlisting.json')
+search_data = {}
 # Create your views here.
 def index(request):
     """
@@ -51,18 +52,31 @@ def listing(request, listing_id):
     docstring
     """
 
-    data = []
-    if 's_listing' in request.path_info:
-        for listing in for_sale_data['listings']:
+    return_data = []
+
+    if (search_data):
+
+        print (search_data)
+        for listing in search_data['listings']:
             if listing['listing_id'] == listing_id:
-                data = listing
-    elif 'r_listing' in request.path_info:
-        for listing in for_rent_data['listings']:
-            if listing['listing_id'] == listing_id:
-                data = listing
+                return_data = listing
+    else:
+    
+    # print(search_data['listings'][0])
+    # print(listing_id)
+    # print(for_sale_data['listings'][0]['listing_id'])
+
+        if 's_listing' in request.path_info:
+            for listing in for_sale_data['listings']:
+                if listing['listing_id'] == listing_id:
+                    return_data = listing
+        elif 'r_listing' in request.path_info:
+            for listing in for_rent_data['listings']:
+                if listing['listing_id'] == listing_id:
+                    return_data = listing
 
     context = {
-        'listing': data,
+        'listing': return_data,
     }
 
     return render(request, 'listings/listing.html', context)
@@ -113,6 +127,8 @@ def search(request):
     url = "https://realtor.p.rapidapi.com/properties/"
     querystring = {
         "offset":"0",
+        "limit": settings.REALTOR_API_SALE_LIMIT,
+        "city" : settings.REALTOR_API_DEFAULT_CITY,
         "sort":"relevance",
     }
 
@@ -134,17 +150,15 @@ def search(request):
                 price = request.GET['price']
                 if price:
                     querystring['price_max'] = price
-                    querystring["limit"] = settings.REALTOR_API_SALE_LIMIT
         elif 'rent' in search:
+            querystring["limit"] = settings.REALTOR_API_RENT_LIMIT
             if 'price-rent' in request.GET:
                 price_rent = request.GET['price-rent']
                 if '2000' in price_rent:
                     querystring['price_min'] = price_rent
-                    querystring["limit"] = settings.REALTOR_API_RENT_LIMIT
                 else:
                     querystring['price_max'] = str(int(price_rent) + 200)
                     querystring['price_min'] = price_rent
-                    querystring["limit"] = settings.REALTOR_API_RENT_LIMIT
     # city
     if 'city' in request.GET:
         city = request.GET['city']
@@ -166,12 +180,16 @@ def search(request):
 
 
     response = requests.request("GET", url, headers=headers, params=querystring)
-    # data = readfile('forsalelisting.json')
+    # data = readfile('searchlisting.json')
     data = json.loads(response.text)
     
+    global search_data
+    search_data = data
+
+
 
     context = {
-        'listings': data['listings'],
+        'listings': search_data['listings'],
         'state_choices': state_choices,
         'bedroom_choices': bedroom_choices,
         'price_choices': price_choices,
