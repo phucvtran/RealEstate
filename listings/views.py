@@ -22,7 +22,7 @@ def index(request):
     """
     docstring
     """
-
+    search_data.clear()
     # for sale 
     paginator = Paginator(for_sale_data['listings'], 6)
     page = request.GET.get('page')
@@ -54,7 +54,7 @@ def listing(request, listing_id):
 
     return_data = []
 
-    if (search_data):
+    if search_data:
 
         for listing in search_data['listings']:
             if listing['listing_id'] == listing_id:
@@ -77,7 +77,7 @@ def listing(request, listing_id):
     return render(request, 'listings/listing.html', context)
 
 def sale(request):
-
+    search_data.clear()
     paginator = Paginator(for_sale_data['listings'], 6)
     page = request.GET.get('page')
     paged_listings= paginator.get_page(page)
@@ -96,7 +96,7 @@ def sale(request):
     return render(request, 'listings/for_sale_listings.html',context)
 
 def rent(request):
-
+    search_data.clear()
     paginator = Paginator(for_rent_data['listings'], 6)
     page = request.GET.get('page')
     paged_listings= paginator.get_page(page)

@@ -7,6 +7,7 @@ from .models import Contact
 # Create your views here.
 def contact(request):
     if request.method == 'POST':
+        print('dhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
         listing_id = request.POST['listing_id']
         listing = request.POST['listing']
         name = request.POST['name']
@@ -14,7 +15,7 @@ def contact(request):
         phone = request.POST['phone']
         message = request.POST['message']
         user_id = request.POST['user_id']
-        realtor_email = request.POST['realtor_email']
+        # realtor_email = request.POST['realtor_email']
 
         # Check if user has made inquiry already
         if request.user.is_authenticated:
@@ -25,15 +26,15 @@ def contact(request):
                 return redirect('/listings/'+listing_id)
 
         contact = Contact(listing=listing, listing_id=listing_id, name=name,
-         email=email, phone=phone, message=message,user_id=user_id)
+        email=email, phone=phone, message=message,user_id=user_id)
         
         contact.save()
 
         send_mail(
             'Property Listing Inquiry', # subject
-            'There has been an inquiry for ' + listing+ '. SIgn into the admin panel for more info', # body message
+            'There has been an inquiry for ' + listing+ '. Sign into the admin panel for more info', # body message
             'tran@pullova.com',
-            ['tran@pullova.com', 'vtphuchn@yahoo.com', realtor_email],
+            ['tran@pullova.com', 'vtphuchn@yahoo.com', email],
             fail_silently=False,
         )
 
