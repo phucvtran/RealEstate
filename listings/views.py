@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render,redirect
 
 import requests, json
 
-import re
+from btre import settings
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
@@ -56,15 +56,10 @@ def listing(request, listing_id):
 
     if (search_data):
 
-        print (search_data)
         for listing in search_data['listings']:
             if listing['listing_id'] == listing_id:
                 return_data = listing
     else:
-    
-    # print(search_data['listings'][0])
-    # print(listing_id)
-    # print(for_sale_data['listings'][0]['listing_id'])
 
         if 's_listing' in request.path_info:
             for listing in for_sale_data['listings']:

@@ -152,6 +152,7 @@ REALTOR_API_FORRENT_URL = config ('REALTOR_API_FORRENT_URL', default ='')
 REALTOR_API_SALE_LIMIT = config ('REALTOR_API_SALE_LIMIT', default ='')
 REALTOR_API_RENT_LIMIT = config ('REALTOR_API_RENT_LIMIT', default ='')
 REALTOR_API_DEFAULT_CITY = config('REALTOR_API_DEFAULT_CITY', default ='')
+REALTOR_API_DEFAULT_STATE = config('REALTOR_API_DEFAULT_STATE', default ='')
 
 try:
     from .local_settings import *

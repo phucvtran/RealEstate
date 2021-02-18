@@ -19,7 +19,7 @@ def for_sale_API(modeladmin, request, queryset):
 
     response = requests.request("GET", url, headers=headers, params=querystring)
 
-    data = json.loads(response.text)
+    # data = json.loads(response.text)
 
     with open('forsalelisting.json', 'wb') as outf:
         outf.write(response.content)
@@ -30,7 +30,12 @@ def for_rent_API(modeladmin, request, queryset):
     # default listing is set to SEATTLE, WASHINGTON
     url = settings.REALTOR_API_FORRENT_URL
 
-    querystring = {"city":"Seattle","offset":"0","limit": "20","state_code":"WA","sort":"relevance"}
+    querystring = {
+        "city":settings.REALTOR_API_DEFAULT_CITY,
+        "offset":"0",
+        "limit": settings.REALTOR_API_RENT_LIMIT,
+        "state_code":settings.REALTOR_API_DEFAULT_STATE,
+        "sort":"relevance"}
 
     headers = {
         'x-rapidapi-key': settings.REALTOR_API_KEY,
@@ -39,11 +44,12 @@ def for_rent_API(modeladmin, request, queryset):
 
     response = requests.request("GET", url, headers=headers, params=querystring)
 
-    data = json.loads(response.text)
+    # data = json.loads(response.text)
 
     with open('forrentlisting.json', 'wb') as outf:
         outf.write(response.content)
         outf.close()
+
 
 class ListingAdmin(admin.ModelAdmin):
     list_display = ('id', 'address', 'is_published', 'price', 'list_date', 'realtor')
