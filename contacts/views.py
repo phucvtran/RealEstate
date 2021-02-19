@@ -3,7 +3,8 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from .models import Contact
 from listings.models import Listing
-from btre import settings
+from listings import  views
+from btre import  settings
 
 
 # Create your views here.
@@ -50,51 +51,64 @@ def contact(request):
         return redirect('/listings/'+partial_url+listing_id)
 
 def Save_Listing(request):
-    prop_list = {}
     
     # get the selected listing in listings list
     if request.method == 'POST':
-        if settings.search_data:
-            for listing in settings.search_data['listings']:
+        if views.search_data:
+            for listing in views.search_data['listings']:
                 if listing['listing_id'] == request.POST['listing_id']:
                     prop_list = listing
+                    if prop_list['prop_status'] == 'for_sale':
+                        save_sale_listing(prop_list)
+                    elif prop_list['prop_status'] == 'for_rent':
+                        save_rent_listing(prop_list)
         elif request.POST['prop_status'] == 'for_sale':
             for listing in settings.for_sale_data['listings']:
                 if listing['listing_id'] == request.POST['listing_id']:
                     prop_list = listing
+                    save_sale_listing(prop_list)
         elif  request.POST['prop_status'] == 'for_rent':
             for listing in settings.for_rent_data['listings']:
                 if listing['listing_id'] == request.POST['listing_id']:
                     prop_list = listing
+                    save_rent_listing(prop_list)
+        
+        
+            
+    
+
+def save_sale_listing(prop_list):
+    listing_id = prop_list['listing_id']
+    prop_type = prop_list['prop_type']
+    prop_status = prop_list['prop_status']
+    last_update = prop_list['last_update']
+    title = prop_list['address']
+    address = prop_list['address']
+    city = prop_list['address_new']['city']
+    postal_code = prop_list['address_new']['postal_code']
+    state_code = prop_list['address_new']['state_code']
+    state = prop_list['address_new']['state']
+    price = prop_list['price']
+    lat = prop_list['lat']
+    lon = prop_list['lon']
+    beds = prop_list['beds']
+    baths = prop_list['baths']
+    sqft = prop_list['sqft']
+    photo = prop_list['photo']
+    list_date = prop_list['list_date']
+    office_name = prop_list['office_name']
+    rdc_web_url = prop_list['rdc_web_url']
+    lot_size = ""
+    neighborhood = ""
     try:
-        listing_id = prop_list['listing_id']
-        prop_type = prop_list['prop_type']
-        prop_status = prop_list['prop_status']
-        last_update = prop_list['last_update']
-        list_date = prop_list['list_date']
-        office_name = prop_list['office_name']
-        title = prop_list['address']
-        address = prop_list['address']
-        city = prop_list['address_new']['city']
-        postal_code = prop_list['address_new']['postal_code']
-        state_code = prop_list['address_new']['state_code']
-        state = prop_list['address_new']['state']
-        neighborhood = prop_list['address_new']['neighborhoods'][0]['name']
-        price_raw = prop_list['price_raw']
-        price = prop_list['price']
-        lat = prop_list['lat']
-        lon = prop_list['lon']
-        beds = prop_list['beds']
-        baths = prop_list['baths']
-        sqft = prop_list['sqft']
-        sqft_raw = prop_list['sqft_raw']
-        lot_size = prop_list['lot_size']
-        rdc_web_url = prop_list['rdc_web_url']
-        photo = prop_list['photo']
-    except  KeyError:
-        pass
-    except  None:
-        pass
+        neighborhood = prop_list['address_new']['neighborhoods'][0]['name'] 
+    except KeyError:
+        neighborhood = "N/A"      
+
+    try:
+        lot_size = prop_list['lot_size']  
+    except KeyError:
+        lot_size = "N/A"
 
     listing = Listing(
         listing_id = listing_id,
@@ -110,16 +124,65 @@ def Save_Listing(request):
         state_code = state_code,
         state = state,
         neighborhood = neighborhood,
-        price_raw = price_raw,
         price = price,
         lat = lat,
         lon = lon,
         beds = beds,
         baths = baths,
         sqft = sqft,
-        sqft_raw = sqft_raw,
         lot_size = lot_size,
         rdc_web_url = rdc_web_url,
+        photo = photo)
+
+    listing.save()
+
+def save_rent_listing(prop_list):
+    listing_id = prop_list['listing_id']
+    prop_type = prop_list['prop_type']
+    prop_status = prop_list['prop_status']
+    last_update = prop_list['last_update']
+    title = prop_list['address']
+    address = prop_list['address']
+    city = prop_list['address_new']['city']
+    postal_code = prop_list['address_new']['postal_code']
+    state_code = prop_list['address_new']['state_code']
+    state = prop_list['address_new']['state']
+    price = prop_list['price']
+    lat = prop_list['lat']
+    lon = prop_list['lon']
+    beds = prop_list['beds']
+    baths = prop_list['baths']
+    sqft = prop_list['sqft']
+    photo = prop_list['photo']
+    neighborhood = ""
+    try:
+        neighborhood = prop_list['name']
+    except KeyError:
+        neighborhood = "N/A"
+
+
+    listing = Listing(
+        listing_id = listing_id,
+        prop_type = prop_type,
+        prop_status = prop_status,
+        last_update = last_update,
+        list_date = '',
+        office_name = "N/A",
+        title = title,
+        address = address,
+        city = city,
+        postal_code = postal_code,
+        state_code = state_code,
+        state = state,
+        neighborhood = neighborhood,
+        price = price,
+        lat = lat,
+        lon = lon,
+        beds = beds,
+        baths = baths,
+        sqft = sqft,
+        lot_size = "N/A",
+        rdc_web_url = "N/A",
         photo = photo)
 
     listing.save()

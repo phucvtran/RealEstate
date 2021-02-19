@@ -12,12 +12,13 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from .choices import state_choices, price_choices, bedroom_choices, search_choices, price_choices_rent
 
+search_data = {}
 # Create your views here.
 def index(request):
     """
     docstring
     """
-    settings.search_data.clear()
+    # search_data.clear()
     # for sale 
     paginator = Paginator(settings.for_sale_data['listings'], 6)
     page = request.GET.get('page')
@@ -46,17 +47,16 @@ def listing(request, listing_id):
     single listing
     docstring
     """
+
     save_data = Listing.objects.all().filter(listing_id = listing_id)
 
     save_data = list(save_data.values())
 
-
-
     return_data = []
     # search for dashboard
-    if settings.search_data:
+    if search_data and 'search' in request.META.get('HTTP_REFERER'):
 
-        for listing in settings.search_data['listings']:
+        for listing in search_data['listings']:
             if listing['listing_id'] == listing_id:
                 return_data = listing
 
@@ -80,7 +80,7 @@ def listing(request, listing_id):
     return render(request, 'listings/listing.html', context)
 
 def sale(request):
-    settings.search_data.clear()
+    # search_data.clear()
     paginator = Paginator(settings.for_sale_data['listings'], 6)
     page = request.GET.get('page')
     paged_listings= paginator.get_page(page)
@@ -99,7 +99,7 @@ def sale(request):
     return render(request, 'listings/for_sale_listings.html',context)
 
 def rent(request):
-    settings.search_data.clear()
+    # search_data.clear()
     paginator = Paginator(settings.for_rent_data['listings'], 6)
     page = request.GET.get('page')
     paged_listings= paginator.get_page(page)
@@ -181,12 +181,13 @@ def search(request):
     # data = readfile('searchlisting.json')
     data = json.loads(response.text)
 
-    settings.search_data = data
+    global search_data
+    search_data = data
 
 
 
     context = {
-        'listings': settings.search_data['listings'],
+        'listings': search_data['listings'],
         'state_choices': state_choices,
         'bedroom_choices': bedroom_choices,
         'price_choices': price_choices,

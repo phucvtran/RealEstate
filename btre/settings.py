@@ -17,9 +17,6 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-for_rent_data = {}
-for_sale_data = {}
-search_data = {}
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -101,11 +98,14 @@ def readfile(filename):
         f.close()
         return data
 
-def init():
-    global for_sale_data
-    for_sale_data = readfile('forsalelisting.json')
-    global for_rent_data
-    for_rent_data = readfile('forrentlisting.json')
+# def init():
+#     global for_sale_data
+#     for_sale_data = readfile('forsalelisting.json')
+#     global for_rent_data
+#     for_rent_data = readfile('forrentlisting.json')
+
+for_rent_data = readfile('forrentlisting.json')
+for_sale_data = readfile('forsalelisting.json')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

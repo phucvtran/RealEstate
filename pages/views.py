@@ -15,7 +15,7 @@ def index(request):
     #     'bedroom_choices': bedroom_choices, 
     #     'price_choices': price_choices
     # }
-    settings.init()
+    # settings.init()
 
     context = {
         'sale_listings' : settings.for_sale_data['listings'][:3],
