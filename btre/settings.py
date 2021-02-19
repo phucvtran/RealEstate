@@ -10,13 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
-import os
+import os, json
 from pathlib import Path
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+for_rent_data = {}
+for_sale_data = {}
+search_data = {}
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -92,6 +95,17 @@ DATABASES = {
     }
 }
 
+def readfile(filename):
+    with open(filename) as f:
+        data = json.load(f)
+        f.close()
+        return data
+
+def init():
+    global for_sale_data
+    for_sale_data = readfile('forsalelisting.json')
+    global for_rent_data
+    for_rent_data = readfile('forrentlisting.json')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -144,6 +158,13 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
+
+# Email
+EMAIL_HOST = 'smtpout.secureserver.net'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'tran@pullova.com'
+EMAIL_HOST_PASSWORD = 'Seattle2018'
+EMAIL_USE_TLS = True
 
 REALTOR_API_KEY = config('REALTOR_API_KEY', default='')
 REALTOR_API_HOST = config ('REALTOR_API_HOST', default='')

@@ -45,6 +45,7 @@
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Property</th>
+                  <th scope="col">Property Status</th>
                   <th></th>
                 </tr>
               </thead>
@@ -53,8 +54,13 @@
                   <tr>
                     <td>{{contact.id}}</td>
                     <td>{{contact.listing}}</td>
+                    <td>{{contact.prop_status}}</td>
                     <td>
-                      <a class="btn btn-light" href="{% url 'listing' contact.listing_id %}">View Listing</a>
+                      {%if contact.prop_status == 'for_sale'%}
+                        <a class="btn btn-light" href="{% url 's_listing' contact.listing_id %}">View Listing</a>
+                      {%elif contact.prop_status == 'for_rent'%}
+                        <a class="btn btn-light" href="{% url 'r_listing' contact.listing_id %}">View Listing</a>
+                      {%endif%}
                     </td>
                   </tr>   
                 {%endfor%}   

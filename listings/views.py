@@ -6,30 +6,25 @@ from django.shortcuts import get_object_or_404, render,redirect
 import requests, json
 
 from btre import settings
+from .models import Listing
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from .choices import state_choices, price_choices, bedroom_choices, search_choices, price_choices_rent
 
-from .models import Listing
-from pages.views import readfile
-
-for_sale_data = readfile('forsalelisting.json')
-for_rent_data = readfile('forrentlisting.json')
-search_data = {}
 # Create your views here.
 def index(request):
     """
     docstring
     """
-    search_data.clear()
+    settings.search_data.clear()
     # for sale 
-    paginator = Paginator(for_sale_data['listings'], 6)
+    paginator = Paginator(settings.for_sale_data['listings'], 6)
     page = request.GET.get('page')
     paged_listings= paginator.get_page(page)
 
     # for rent
-    paginator_rent = Paginator(for_rent_data['listings'], 6)
+    paginator_rent = Paginator(settings.for_rent_data['listings'], 6)
     page_rent = request.GET.get('page')
     paged_listings_rent= paginator_rent.get_page(page_rent)
 
@@ -51,22 +46,30 @@ def listing(request, listing_id):
     single listing
     docstring
     """
+    save_data = Listing.objects.all().filter(listing_id = listing_id)
+
+    save_data = list(save_data.values())
+
+
 
     return_data = []
+    # search for dashboard
+    if settings.search_data:
 
-    if search_data:
-
-        for listing in search_data['listings']:
+        for listing in settings.search_data['listings']:
             if listing['listing_id'] == listing_id:
                 return_data = listing
+
+    elif save_data:
+        return_data = save_data[0]
     else:
 
         if 's_listing' in request.path_info:
-            for listing in for_sale_data['listings']:
+            for listing in settings.for_sale_data['listings']:
                 if listing['listing_id'] == listing_id:
                     return_data = listing
         elif 'r_listing' in request.path_info:
-            for listing in for_rent_data['listings']:
+            for listing in settings.for_rent_data['listings']:
                 if listing['listing_id'] == listing_id:
                     return_data = listing
 
@@ -77,8 +80,8 @@ def listing(request, listing_id):
     return render(request, 'listings/listing.html', context)
 
 def sale(request):
-    search_data.clear()
-    paginator = Paginator(for_sale_data['listings'], 6)
+    settings.search_data.clear()
+    paginator = Paginator(settings.for_sale_data['listings'], 6)
     page = request.GET.get('page')
     paged_listings= paginator.get_page(page)
 
@@ -96,8 +99,8 @@ def sale(request):
     return render(request, 'listings/for_sale_listings.html',context)
 
 def rent(request):
-    search_data.clear()
-    paginator = Paginator(for_rent_data['listings'], 6)
+    settings.search_data.clear()
+    paginator = Paginator(settings.for_rent_data['listings'], 6)
     page = request.GET.get('page')
     paged_listings= paginator.get_page(page)
 
@@ -177,14 +180,13 @@ def search(request):
     response = requests.request("GET", url, headers=headers, params=querystring)
     # data = readfile('searchlisting.json')
     data = json.loads(response.text)
-    
-    global search_data
-    search_data = data
+
+    settings.search_data = data
 
 
 
     context = {
-        'listings': search_data['listings'],
+        'listings': settings.search_data['listings'],
         'state_choices': state_choices,
         'bedroom_choices': bedroom_choices,
         'price_choices': price_choices,
