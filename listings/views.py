@@ -75,6 +75,7 @@ def listing(request, listing_id):
 
     context = {
         'listing': return_data,
+        'google_api_key': settings.GOOGLE_MAP_API_KEY,
     }
 
     return render(request, 'listings/listing.html', context)
@@ -92,7 +93,8 @@ def sale(request):
         'price_choices': price_choices,
         'search_choices': search_choices,
         'price_choices_rent': price_choices_rent,
-        'listings_json': json.dumps(settings.for_sale_data)
+        'listings_json': json.dumps(settings.for_sale_data),
+        'google_api_key': settings.GOOGLE_MAP_API_KEY,
         
     }
     
@@ -112,7 +114,8 @@ def rent(request):
         'price_choices': price_choices,
         'search_choices': search_choices,
         'price_choices_rent': price_choices_rent,
-        'listings_json': json.dumps(settings.for_rent_data)
+        'listings_json': json.dumps(settings.for_rent_data),
+        'google_api_key': settings.GOOGLE_MAP_API_KEY,
         
         
     }
@@ -196,7 +199,6 @@ def search(request):
         'price_choices_rent': price_choices_rent,
         'values': querystring,
         'searchmethod': searchmethod,
-        'listings_json': json.dumps(search_data)
         
     }
     return render(request, 'listings/search.html', context)
