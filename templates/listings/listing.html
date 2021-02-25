@@ -121,6 +121,7 @@
 
         <!-- </div> -->
         <!-- Fields -->
+        
         <div class="row mb-5 fields">
             <div class="col-md-6">
             <ul class="list-group list-group-flush">
@@ -195,11 +196,105 @@
         </div>
 
         <!-- Description -->
-        <div class="row mb-5">
+        <!-- <div class="row mb-5">
+            <h4>Location:</h4> 
             <div class="col-md-12">
-            listing.Description
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d21557.583377748077!2d-122.26307594999997!3d47.51527385!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1614123222915!5m2!1sen!2sus" width="850" height="450" style="border:0;" allowfullscreen="True" loading="lazy"></iframe>
             </div>
+            
+        </div> -->
+        <div class="row mb-5">
+            <style>
+                #map {
+                    height: 450px;
+                    /* The height is 400 pixels */
+                    width: 100%;
+                    /* The width is the width of the web page */
+                  }
+            </style>
+
+            <script type="text/javascript">
+                // Initialize and add the map
+                function initMap() {
+                  // The location of Uluru
+                  const uluru = { lat: parseFloat("{{listing.lat}}"), lng: parseFloat("{{listing.lon}}")};
+                  // The map, centered at Uluru
+                  const map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 15,
+                    center: uluru,
+                  });
+                
+                  const contentString =
+                    '<div class="card listing-preview">'+
+                      '<div class="card-body">'+
+                        '<div class="listing-heading text-center">'+
+                          '<h4 class="text-primary">{{listing.address_new.line}}</h4>'+
+                          '<p>'+
+                            '<i class="fas fa-map-marker text-secondary"></i> {{listing.address_new.city}} {{listing.address_new.state_code}}, {{listing.address_new.postal_code}}</p>'+
+                        '</div>'+
+                        '<hr>'+
+                        '<div class="row py-2 text-secondary">'+
+                            '<div class="col-6" >'+
+                                '{%if listing.prop_status == "for_sale" %}'+
+
+                                    '<i class="fas fa-clock"></i> {{listing.last_update | custom_date}}</div>'+
+                                '{%elif listing.prop_status == "for_rent" %}'+
+                                    '<i class="fas fa-clock"></i> {{listing.last_update | custom_date_rent}}</div>'+
+                                '{%endif%}'+
+                              '<div class="col-6" >'+
+                                  '<i class="fas fa-money-bill-alt"></i> {{listing.price}}</div>'+
+                          '</div>'+
+                        '<div class="row py-2 text-secondary">'+
+                          '<div class="col-6">'+
+                            '<i class="fas fa-home"></i> {{listing.prop_type.capitalize}}</div>'+
+                          '<div class="col-6">'+
+                            '<i class="fas fa-th-large"></i> Sqft: {{listing.sqft}}</div>'+
+        
+                        '</div>'+
+                        '<div class="row py-2 text-secondary">'+
+                          '<div class="col-6">'+
+                            '<i class="fas fa-bed"></i> Bedrooms: {{listing.beds}}</div>'+
+                          '<div class="col-6">'+
+                            '<i class="fas fa-bath"></i> Bathrooms: {{listing.baths}}</div>'+
+                        '</div>'+
+                        '<hr>'+
+                        '{%if listing.photo%}'+
+                        '<img class="card-img-top" src="{{listing.photo}}" alt="">'+
+                      '{%else%}'+
+                        '<img class="card-img-top" src="{% static "img/nophotoavailable.jpg" %}" alt="">' +
+                     '{%endif%}'+                    
+                      '</div>'+
+                    '</div>';
+
+                    const infowindow = new google.maps.InfoWindow({
+                        content: contentString,
+                      });
+
+                  // The marker, positioned at Uluru
+                  const marker = new google.maps.Marker({
+                    position: uluru,
+                    map: map,
+                  });
+    
+                  marker.addListener("click", () => {
+                    infowindow.open(map, marker);
+                  });
+                  infowindow.open(map, marker);
+                  
+                }
+            </script>
+            <h3>Property Location</h3>
+                <!--The div element for the map -->
+            <div id="map"></div>
+
+            <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+            <script
+                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDF6uzLiDge2o_26Q632DW6IING4WkzLn4&callback=initMap&libraries=&v=weekly"
+                 async
+            ></script>
+            
         </div>
+
         </div>
         <div class="col-md-3">
         <div class="card mb-3">

@@ -29,6 +29,8 @@ def for_sale_API(modeladmin, request, queryset):
     with open('forsalelisting.json', 'wb') as outf:
         outf.write(response.content)
         outf.close()
+    global for_rent_data
+    for_rent_data = settings.readfile('forrentlisting.json')
 
 def for_rent_API(modeladmin, request, queryset):
     # call Realtor api to get listing,
@@ -54,6 +56,8 @@ def for_rent_API(modeladmin, request, queryset):
     with open('forrentlisting.json', 'wb') as outf:
         outf.write(response.content)
         outf.close()
+    global for_rent_data
+    for_rent_data = settings.readfile('forrentlisting.json')
 
 
 class ListingAdmin(admin.ModelAdmin):

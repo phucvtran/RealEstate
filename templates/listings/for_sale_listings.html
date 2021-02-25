@@ -1,6 +1,7 @@
 {% extends 'base.html'%}
 {%load humanize%}
 {%load custom_date%}
+{%load static%}
 
 {%block address%} | Browse Property Listing{%endblock%}
 
@@ -106,6 +107,7 @@
   <!-- Listings -->
   <section id="listings" class="py-4">
     <div class="container">
+      <a href="#map" class="btn btn-light mb-4">Browse By Map</a>
       <div class="row">
         {% if listings%}
           {% for listing in listings%}
@@ -210,11 +212,138 @@
 
           {%endif%}
 
-            
-            
           </ul>
           {%endif%}
         </div>
+      </div>
+
+      <!-- Map Section-->
+      <div class="row mb-5">
+        <style>
+            #map {
+                height: 450px;
+                /* The height is 400 pixels */
+                width: 100%;
+                /* The width is the width of the web page */
+              }
+        </style>
+        <script id="data-json" type="application/json">
+          {{listings_json|safe}}
+        </script>
+
+        <script type="application/javascript">
+
+          function formatDate(d){
+            var date = d.slice(0,10)
+            var m = {
+              "01": "Jan.",
+              "02": "Feb.",
+              "03": "Mar.",
+              "04": "Apr.",
+              "05": "May",
+              "06": "Jun.",
+              "07": "Jul.",
+              "08": "Aug.",
+              "09": "Sep.",
+              "10": "Oct.",
+              "11": "Nov.",
+              "12": "Dec.",
+            }
+            month = m[date.slice(5,7)]
+            return month + " " + date.slice(8,10) + ", " + date.slice(0,4)
+          }
+            // Initialize and add the map
+            function initMap() {
+              // The location of Uluru
+              const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+              var string_data = $('#data-json').text();
+              var listings_data = JSON.parse(string_data)
+              var listings = listings_data.listings
+              var marker,i,contentString, photo_url;
+              var infowindow = new google.maps.InfoWindow();
+              // The map, centered at Uluru
+              const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 11,
+                center: { lat : parseFloat( listings[0].lat), lng: parseFloat( listings[0].lon)}
+              });
+
+            
+              for (i=0; i<listings.length; i++){
+                
+                if (listings[i].photo != null){
+                  photo_url = '<img class="card-img-top" src="' + listings[i].photo+'"'+' alt="">'
+                }
+                else{
+                  photo_url = '<img class="card-img-top" src="{% static "img/nophotoavailable.jpg" %}" alt="">'
+                }
+                contentString = 
+                  '<div class="card listing-preview">'+
+                    '<div class="card-body">'+
+                      '<div class="listing-heading text-center">'+
+                        '<h4 class="text-primary">'+listings[i].address_new.line+'</h4>'+
+                        '<p>'+
+                          '<i class="fas fa-map-marker text-secondary"></i> '+ listings[i].address_new.city+ " " + listings[i].address_new.state_code +", " + listings[i].address_new.postal_code+'</p>'+
+                      '</div>'+
+                      '<hr>'+
+                      '<div class="row py-2 text-secondary">'+
+                        '<div class="col-6">'+
+                          '<i class="fas fa-clock"></i> '+formatDate(listings[i].last_update)+'</div>'+
+                        '<div class="col-6">'+
+                          '<i class="fas fa-money-bill-alt"></i> '+listings[i].price+'</div>'+
+                      '</div>'+
+                      '<div class="row py-2 text-secondary">'+
+                        '<div class="col-6">'+
+                          '<i class="fas fa-home"></i> '+(listings[i].prop_type).charAt(0).toUpperCase() + (listings[i].prop_type).slice(1)+'</div>'+
+                        '<div class="col-6">'+
+                          '<i class="fas fa-th-large"></i> Sqft: '+listings[i].sqft+'</div>'+
+                      
+                      '</div>'+
+                      '<div class="row py-2 text-secondary">'+
+                        '<div class="col-6">'+
+                          '<i class="fas fa-bed"></i> Bedrooms: '+listings[i].beds+'</div>'+
+                        '<div class="col-6">'+
+                          '<i class="fas fa-bath"></i> Bathrooms: '+listings[i].baths+'</div>'+
+                      '</div>'+
+                      '<hr>'+
+                     
+                      photo_url+
+                      '<hr>'+
+                      '<a href="s_listing_id_'+listings[i].listing_id+'" class="btn btn-primary btn-block">More Info</a>'+
+                    '</div>'+
+                  '</div>'
+  
+  
+                // The marker, positioned at Uluru
+                marker = new google.maps.Marker({
+                  position: {lat: parseFloat (listings[i].lat), lng: parseFloat(listings[i].lon)},
+                  label: labels[i],
+                  map: map,
+          
+                });
+  
+                
+  
+                google.maps.event.addListener(marker, 'click', (function(marker, contentString, infowindow) {
+                  return function() {
+                    infowindow.setContent(contentString);
+                    infowindow.open(map, marker);
+                  }
+                })(marker, contentString, infowindow));
+                
+               }
+
+            }
+        </script>
+        <h3>Property Location</h3>
+            <!--The div element for the map -->
+        <div id="map"></div>
+
+        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+        <script
+             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDF6uzLiDge2o_26Q632DW6IING4WkzLn4&callback=initMap&libraries=&v=weekly"
+             async
+        ></script>
+      
       </div>
     </div>
   </section>

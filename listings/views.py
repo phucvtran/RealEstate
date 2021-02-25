@@ -84,7 +84,6 @@ def sale(request):
     paginator = Paginator(settings.for_sale_data['listings'], 6)
     page = request.GET.get('page')
     paged_listings= paginator.get_page(page)
-
     
     context = {
         'listings': paged_listings,
@@ -92,7 +91,8 @@ def sale(request):
         'bedroom_choices': bedroom_choices,
         'price_choices': price_choices,
         'search_choices': search_choices,
-        'price_choices_rent': price_choices_rent
+        'price_choices_rent': price_choices_rent,
+        'listings_json': json.dumps(settings.for_sale_data)
         
     }
     
@@ -111,7 +111,8 @@ def rent(request):
         'bedroom_choices': bedroom_choices,
         'price_choices': price_choices,
         'search_choices': search_choices,
-        'price_choices_rent': price_choices_rent
+        'price_choices_rent': price_choices_rent,
+        'listings_json': json.dumps(settings.for_rent_data)
         
         
     }
@@ -194,7 +195,8 @@ def search(request):
         'search_choices': search_choices,
         'price_choices_rent': price_choices_rent,
         'values': querystring,
-        'searchmethod': searchmethod
+        'searchmethod': searchmethod,
+        'listings_json': json.dumps(search_data)
         
     }
     return render(request, 'listings/search.html', context)
