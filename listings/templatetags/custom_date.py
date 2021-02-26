@@ -5,22 +5,35 @@ register = template.Library()
 
 
 @register.filter(expects_localtime=True, is_safe=False)
-def custom_date(value, arg=None):
+def custom_date(value):
+    m = {
+        "01": "Jan.",
+        "02": "Feb.",
+        "03": "Mar.",
+        "04": "Apr.",
+        "05": "May",
+        "06": "Jun.",
+        "07": "Jul.",
+        "08": "Aug.",
+        "09": "Sep.",
+        "10": "Oct.",
+        "11": "Nov.",
+        "12": "Dec.",
+    }
     if value in (None, ''):
         return ''
 
     if isinstance(value, str):
-        api_date_format = '%Y-%m-%dT%H:%M:%S%z'  # 2019-08-30T08:22:32.245-0700
-        api_date_format_2 = "%Y-%m-%d"
+       
         if 'Z' in value:
-            value = datetime.datetime.strptime(value, api_date_format)
+            value = m[value[5:7]] + " " + value[8:10] + ", " + value[0:4]    
         else:
-            value = datetime.datetime.strptime(value, api_date_format_2)
+            value = "N/A"
 
     try:
-        return formats.date_format(value, arg)
+        return formats.date_format(value)
     except AttributeError:
         try:
-            return format(value, arg)
+            return format(value)
         except AttributeError:
             return ''

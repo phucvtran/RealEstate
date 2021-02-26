@@ -2,7 +2,6 @@
 
 {% load humanize%}
 {%load custom_date%}
-{% load custom_date_rent%}
 {%load static%}
 
 {%block title%} | {{listing.address}}{%endblock%}
@@ -173,7 +172,7 @@
                 <li class="list-group-item text-secondary">
                 <i class="fas fa-calendar"></i> Listing Date:
                 {%if not listing.list_date%}
-                    <span class="float-right">{{listing.last_update|custom_date_rent}}</span>
+                    <span class="float-right">{{listing.last_update|custom_date}}</span>
                 {%else%}
                     <span class="float-right">{{listing.list_date|custom_date}}</span>
                 {%endif%}
@@ -185,7 +184,7 @@
                     </span>
                 {%elif listing.prop_status == 'for_rent'%}
                     <i class="fas fa-calendar"></i> Last Updated On:
-                    <span class="float-right"> {{listing.last_update | custom_date_rent}}
+                    <span class="float-right"> {{listing.last_update | custom_date}}
                     </span>
                 {%endif%}
                 </li>
@@ -235,12 +234,10 @@
                         '<hr>'+
                         '<div class="row py-2 text-secondary">'+
                             '<div class="col-6" >'+
-                                '{%if listing.prop_status == "for_sale" %}'+
+                                
 
                                     '<i class="fas fa-clock"></i> {{listing.last_update | custom_date}}</div>'+
-                                '{%elif listing.prop_status == "for_rent" %}'+
-                                    '<i class="fas fa-clock"></i> {{listing.last_update | custom_date_rent}}</div>'+
-                                '{%endif%}'+
+                                
                               '<div class="col-6" >'+
                                   '<i class="fas fa-money-bill-alt"></i> {{listing.price}}</div>'+
                           '</div>'+
