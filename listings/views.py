@@ -12,7 +12,6 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from .choices import state_choices, price_choices, bedroom_choices, search_choices, price_choices_rent
 
-search_data = {}
 # Create your views here.
 def index(request):
     """
@@ -54,9 +53,9 @@ def listing(request, listing_id):
 
     return_data = []
     # search for dashboard
-    if search_data and 'search' in request.META.get('HTTP_REFERER'):
+    if 'search' in request.META.get('HTTP_REFERER'):
 
-        for listing in search_data['listings']:
+        for listing in settings.search_data['listings']:
             if listing['listing_id'] == listing_id:
                 return_data = listing
 
@@ -185,13 +184,12 @@ def search(request):
     # data = readfile('searchlisting.json')
     data = json.loads(response.text)
 
-    global search_data
-    search_data = data
+    settings.search_data = data
 
 
 
     context = {
-        'listings': search_data['listings'],
+        'listings': settings.search_data['listings'],
         'state_choices': state_choices,
         'bedroom_choices': bedroom_choices,
         'price_choices': price_choices,
