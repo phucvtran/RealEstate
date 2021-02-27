@@ -53,9 +53,9 @@ def listing(request, listing_id):
 
     return_data = []
     # search for dashboard
-    if 'search' in request.META.get('HTTP_REFERER'):
+    if search_data and 'search' in request.META.get('HTTP_REFERER'):
 
-        for listing in settings.search_data['listings']:
+        for listing in search_data['listings']:
             if listing['listing_id'] == listing_id:
                 return_data = listing
 
@@ -184,12 +184,13 @@ def search(request):
     # data = readfile('searchlisting.json')
     data = json.loads(response.text)
 
-    settings.search_data = data
+    global search_data
+    search_data = data
 
 
 
     context = {
-        'listings': settings.search_data['listings'],
+        'listings': search_data['listings'],
         'state_choices': state_choices,
         'bedroom_choices': bedroom_choices,
         'price_choices': price_choices,

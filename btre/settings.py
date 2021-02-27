@@ -106,7 +106,7 @@ def readfile(filename):
 
 for_rent_data = readfile('forrentlisting.json')
 for_sale_data = readfile('forsalelisting.json')
-search_data = {}
+#search_data = {}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
