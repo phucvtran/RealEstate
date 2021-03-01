@@ -7,6 +7,7 @@ from realtors.models import Realtor
 # Create your models here.
 class Listing(models.Model):
     # realtor = models.ForeignKey(Realtor, on_delete=models.DO_NOTHING)
+    is_search_listing = models.BooleanField(default=False)
     listing_id = models.CharField(max_length=100, default='')
     prop_type = models.CharField(max_length=100, default='')
     prop_status = models.CharField(max_length=100, default='')

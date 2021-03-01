@@ -7,13 +7,13 @@ import requests, json
 
 from btre import settings
 from .models import Listing
+from contacts import views
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from .choices import state_choices, price_choices, bedroom_choices, search_choices, price_choices_rent
 
 # Create your views here.
-#search_data = {}
 
 def index(request):
     """
@@ -48,19 +48,19 @@ def listing(request, listing_id):
     single listing
     docstring
     """
-
+    #get save data
     save_data = Listing.objects.all().filter(listing_id = listing_id)
-
     save_data = list(save_data.values())
+
+    #get search data
+    search_listing = Listing.objects.all().filter(is_search_listing = True, listing_id = listing_id)
+    
+    search_listing = list(search_listing.values())
 
     return_data = []
     # search for dashboard
-    print(request.META.get('HTTP_REFERER'))
     if 'search' in request.META.get('HTTP_REFERER'):
-
-        for listing in search_data['listings']:
-            if listing['listing_id'] == listing_id:
-                return_data = listing
+        return_data = search_listing[0]
 
     elif save_data:
         return_data = save_data[0]
@@ -125,6 +125,12 @@ def rent(request):
     return render(request, 'listings/for_rent_listings.html',context)
 
 def search(request):
+
+    # clear database on search data
+    search_listing = Listing.objects.all().filter(is_search_listing = True)
+    if search_listing.count() > 10:
+        search_listing.delete()
+
     """
     docstring
     """
@@ -187,10 +193,16 @@ def search(request):
     # data = readfile('searchlisting.json')
     data = json.loads(response.text)
 
-    global search_data
     search_data = data
 
-
+    if 'sale' in searchmethod:
+        for listing in search_data['listings']:
+            if not Listing.objects.all().filter(listing_id=listing['listing_id']):
+                views.save_sale_listing(listing, True)
+    elif 'rent' in searchmethod:
+        for listing in search_data['listings']:
+            if not Listing.objects.all().filter(listing_id=listing['listing_id']):
+                views.save_rent_listing(listing, True)
 
     context = {
         'listings': search_data['listings'],

@@ -61,7 +61,7 @@ def for_rent_API(modeladmin, request, queryset):
 
 
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ('listing_id', 'address', 'price', 'list_date')
+    list_display = ('listing_id', 'address','is_search_listing', 'price', 'list_date')
     list_display_links = ('listing_id', 'address')
     # list_filter = ('realtor',)
     # list_editable = ('is_published',)

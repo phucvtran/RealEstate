@@ -11,13 +11,25 @@
 
 <section id="showcase-inner" class="py-5 text-white">
     <div class="container">
-    <div class="row text-center">
-        <div class="col-md-12">
-        <h1 class="display-4">{{listing.address_new.line}}</h1>
-        <p class="lead">
-            <i class="fas fa-map-marker"></i> {{listing.address_new.city}} {{listing.address_new.state_code}}, {{listing.address_new.postal_code}}</p>
+
+    {%if listing.address_new%}
+        <div class="row text-center">
+            <div class="col-md-12">
+            <h1 class="display-4">{{listing.address_new.line}}</h1>
+            <p class="lead">
+                <i class="fas fa-map-marker"></i> {{listing.address_new.city}} {{listing.address_new.state_code}}, {{listing.address_new.postal_code}}</p>
+            </div>
         </div>
-    </div>
+        
+    {%else%}
+        <div class="row text-center">
+            <div class="col-md-12">
+            <h1 class="display-4">{{listing.title}}</h1>
+            <p class="lead">
+                <i class="fas fa-map-marker"></i> {{listing.city}} {{listing.state_code}}, {{listing.postal_code}}</p>
+            </div>
+        </div>
+    {%endif%}
     </div>
 </section>
 
@@ -67,59 +79,7 @@
         {%if listing.prop_status == 'for_sale'%}
             <a href="{{listing.rdc_web_url}}" target="_blank">More Photo></a>
         {%endif%}
-        <!-- Thumbnails -->
-        <!-- <div class="row mb-5 thumbs"> -->
-
-            <!-- {%if listing.photo_1%}
-            <div class="col-md-2">
-            <a href="{{listing.photo_1.url}}" data-lightbox="home-images">
-                <img src="{{listing.photo_1.url}}" alt="" class="img-fluid">
-            </a>
-            </div>
-            {%endif%}
-
-            {%if listing.photo_2%}
-            <div class="col-md-2">
-            <a href="{{listing.photo_2.url}}" data-lightbox="home-images">
-                <img src="{{listing.photo_2.url}}" alt="" class="img-fluid">
-            </a>
-            </div>
-            {%endif%}
-
-            {%if listing.photo_3%}
-            <div class="col-md-2">
-            <a href="{{listing.photo_3.url}}" data-lightbox="home-images">
-                <img src="{{listing.photo_3.url}}" alt="" class="img-fluid">
-            </a>
-            </div>
-            {%endif%}
-
-            {%if listing.photo_4%}
-            <div class="col-md-2">
-            <a href="{{listing.photo_4.url}}" data-lightbox="home-images">
-                <img src="{{listing.photo_4.url}}" alt="" class="img-fluid">
-            </a>
-            </div>
-            {%endif%}
-
-            {%if listing.photo_5%}
-            <div class="col-md-2">
-            <a href="{{listing.photo_5.url}}" data-lightbox="home-images">
-                <img src="{{listing.photo_5.url}}" alt="" class="img-fluid">
-            </a>
-            </div>
-            {%endif%}
-
-            {%if listing.photo_6%}
-            <div class="col-md-2">
-            <a href="{{listing.photo_6.url}}" data-lightbox="home-images">
-                <img src="{{listing.photo_6.url}}" alt="" class="img-fluid">
-            </a>
-            </div> -->
-            <!-- {%endif%} -->
-
-        <!-- </div> -->
-        <!-- Fields -->
+        
         
         <div class="row mb-5 fields">
             <div class="col-md-6">
@@ -227,9 +187,16 @@
                     '<div class="card listing-preview">'+
                       '<div class="card-body">'+
                         '<div class="listing-heading text-center">'+
+                            '{%if listing.address_new%}'+
                           '<h4 class="text-primary">{{listing.address_new.line}}</h4>'+
                           '<p>'+
                             '<i class="fas fa-map-marker text-secondary"></i> {{listing.address_new.city}} {{listing.address_new.state_code}}, {{listing.address_new.postal_code}}</p>'+
+                            '{%else%}'+
+                            '<h4 class="text-primary">{{listing.title}}</h4>'+
+                          '<p>'+
+                            '<i class="fas fa-map-marker text-secondary"></i> {{listing.city}} {{listing.state_code}}, {{listing.postal_code}}</p>'+
+                            '{%endif%}'+
+
                         '</div>'+
                         '<hr>'+
                         '<div class="row py-2 text-secondary">'+
