@@ -42,28 +42,22 @@
           <p class="mt-4">PT Real Estate is a luxury real estate team that works in the US, and has a love for the beautiful scenery. With many years and a solid reputation, clients can expect top notch customer service throughout our experience. We place a strong value on our clients entire experience which keeps them highly ranked.</p>
         </div>
 
-        {%if mvp_realtors%}
-          {%for realtor in mvp_realtors%}
+
             
-            <div class="col-md-4">
-              <div class="card">
-                <img class="card-img-top" src="{% static 'img/nophotoavailable.jpg'%}" alt="Seller of the month">
-                <div class="card-body">
-                  <h5 class="card-title">About Developer</h5>
-                  <h6 class="text-secondary">Phuc Tran</h6>
-                  <p class="card-text">A junior software engineer with a can-do attitude and management skills. Has a strong foundation in programming across multiple platforms. Experienced in database, object-oriented programming, web developing, testing and debugging codes. A challenge lover, willing to put down some hard work. Quickly learn and master new technologies. Successful working in both team and individual.
-                  </p>
-                </div>
+          <div class="col-md-4">
+            <div class="card">
+              <img class="card-img-top" src="{% static 'img/nophotoavailable.jpg'%}" alt="Seller of the month">
+              <div class="card-body">
+                <h5 class="card-title">About Developer</h5>
+                <h6 class="text-secondary">Phuc Tran</h6>
+                <p class="card-text">A junior software engineer with a can-do attitude and management skills. Has a strong foundation in programming across multiple platforms. Experienced in database, object-oriented programming, web developing, testing and debugging codes. A challenge lover, willing to put down some hard work. Quickly learn and master new technologies. Successful working in both team and individual.
+                </p>
               </div>
             </div>
-            
-            
-          {%endfor%}
-        {%else%}
-          <div class="col-md-4">
-            <p>Seller of the month is not Available</p>
           </div>
-        {%endif%}
+            
+            
+
         
       </div>
     </div>
