@@ -10,8 +10,8 @@
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
-          <h1 class="display-4">About BT Real Estate</h1>
-          <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt, pariatur!</p>
+          <h1 class="display-4">About PT Real Estate</h1>
+          <p class="lead">A Powerful Application To Search For Your New Home</p>
         </div>
       </div>
     </div>
@@ -37,11 +37,9 @@
       <div class="row">
         <div class="col-md-8">
           <h2>We Search For The Perfect Home</h2>
-          <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt, pariatur!</p>
+          <p class="lead">We are a real estate team that has been ranked as a number one team in the US</p>
           <img src="{% static 'img/about.jpg' %}" alt="">
-          <p class="mt-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis esse officia repudiandae ad saepe ex, amet
-            neque quod accusamus rem quia magnam magni dolorum facilis ullam minima perferendis? Exercitationem at quaerat
-            commodi id libero eveniet harum perferendis laborum molestias quia.</p>
+          <p class="mt-4">PT Real Estate is a luxury real estate team that works in the US, and has a love for the beautiful scenery. With many years and a solid reputation, clients can expect top notch customer service throughout our experience. We place a strong value on our clients entire experience which keeps them highly ranked.</p>
         </div>
 
         {%if mvp_realtors%}
@@ -49,11 +47,11 @@
             
             <div class="col-md-4">
               <div class="card">
-                <img class="card-img-top" src="{{realtor.photo.url}}" alt="Seller of the month">
+                <img class="card-img-top" src="{% static 'img/nophotoavailable.jpg'%}" alt="Seller of the month">
                 <div class="card-body">
-                  <h5 class="card-title">Seller Of The Month</h5>
-                  <h6 class="text-secondary">{{realtor.name}}</h6>
-                  <p class="card-text">{{realtor.description}}
+                  <h5 class="card-title">About Developer</h5>
+                  <h6 class="text-secondary">Phuc Tran</h6>
+                  <p class="card-text">A junior software engineer with a can-do attitude and management skills. Has a strong foundation in programming across multiple platforms. Experienced in database, object-oriented programming, web developing, testing and debugging codes. A challenge lover, willing to put down some hard work. Quickly learn and master new technologies. Successful working in both team and individual.
                   </p>
                 </div>
               </div>
@@ -74,7 +72,7 @@
   <!-- Work -->
   <section id="work" class="bg-dark text-white text-center">
     <h2 class="display-4">We Work For You</h2>
-    <h4>Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem velit aperiam, unde aliquid at similique!</h4>
+    <h4>Realtor API Provide Direct Access Of New Home Listed For Sale And For Rent With Real-Time Updates</h4>
     <hr>
     <a href="{% url 'listings' %}" class="btn btn-secondary text-white btn-lg">View Our Featured Listings</a>
   </section>
