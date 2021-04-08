@@ -3,7 +3,7 @@ This is a self project using Django framework. This website provide real estate 
 User Features:
  - Create account and manage user profile.
  - Freely browse property listing using the provided search engine.
- - Save listings and make an inquery on selected listing.
+ - Save listings and make an inquiry  on selected listing.
  - Connect with realtor using built-in email form.
  
 Admin Features:
