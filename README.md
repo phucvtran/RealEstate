@@ -1,4 +1,4 @@
-This is a self project using Django framework. This website provide real estate listing in United State; lease and sale properties are available. This website has powerful search engine built in using real time API (Real Estate API). There are adminstrator page for management.
+This is a self project using Django framework. This website provide real estate listing in United State; lease and sale properties are available. This website has powerful search engine built in using real time API (Real Estate API). There are administrator  page for management.
 
 User Features:
  - Create account and manage user profile.
